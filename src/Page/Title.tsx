@@ -24,11 +24,14 @@ export const Title = ({ title, changePageTitle, addNode }: TitleProps) => {
       <h1
         className={styles.title}
         contentEditable
+        ref={headerRef}
         suppressContentEditableWarning
         onInput={(e) => changePageTitle(e.currentTarget.textContent || "")}
         onKeyDown={(event) => {
-          if (event.key === "Enter") event.preventDefault();
-          addNode({ type: "text", id: nanoid(), value: "" }, 0);
+          if (event.key === "Enter") {
+            event.preventDefault();
+            addNode({ type: "text", id: nanoid(), value: "" }, 0);
+          }
         }}
       />
     </div>
