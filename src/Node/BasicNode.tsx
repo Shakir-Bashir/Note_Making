@@ -1,33 +1,35 @@
 import { nanoid } from "nanoid";
-import type { NodeData } from "../utils/types";
-import syles from "./Node.module.css";
+import type { NodeData, NodeType } from "../utils/types";
+import styles from "./Node.module.css";
 import {
   useRef,
   useEffect,
   type FormEventHandler,
   type KeyboardEventHandler,
 } from "react";
+import { useAppState } from "../state/AppStateContext";
+import { CommandPanel } from "./CommandPanel";
 
 type BasicNodeProps = {
   node: NodeData;
   upadteFocusedIndex(index: number): void;
   isFocused: boolean;
   index: number;
-  addNode(node: NodeData, index: number): void;
-  removeNodeByIndex(index: number): void;
-  changeNodeValue(index: number, value: string): void;
 };
+import cx from "classnames";
 
 export const BasicNode = ({
   node,
   upadteFocusedIndex,
   isFocused,
   index,
-  addNode,
-  removeNodeByIndex,
-  changeNodeValue,
 }: BasicNodeProps) => {
   const nodeRef = useRef<HTMLDivElement>(null);
+
+  const showCommandPanel = isFocused && node?.value?.match(/^\//);
+
+  const { changeNodeValue, changeNodeType, removeNodeByIndex, addNode } =
+    useAppState();
 
   useEffect(() => {
     if (isFocused) {
@@ -42,6 +44,13 @@ export const BasicNode = ({
       nodeRef.current.textContent = node.value;
     }
   }, [node]);
+
+  const parseCommand = (nodeType: NodeType) => {
+    if (nodeRef.current) {
+      changeNodeType(index, nodeType);
+      nodeRef.current.textContent = "";
+    }
+  };
 
   const handleInput: FormEventHandler<HTMLDivElement> = ({ currentTarget }) => {
     const { textContent } = currentTarget;
@@ -77,14 +86,19 @@ export const BasicNode = ({
   };
 
   return (
-    <div
-      onClick={handleClick}
-      onKeyDown={onKeyDown}
-      onInput={handleInput}
-      ref={nodeRef}
-      contentEditable
-      suppressContentEditableWarning
-      className={syles.node}
-    />
+    <>
+      {showCommandPanel && (
+        <CommandPanel selectItem={parseCommand} nodeText={node.value} />
+      )}
+      <div
+        onClick={handleClick}
+        onKeyDown={onKeyDown}
+        onInput={handleInput}
+        ref={nodeRef}
+        contentEditable
+        suppressContentEditableWarning
+        className={cx(styles.node, styles[node.type])}
+      />
+    </>
   );
 };
