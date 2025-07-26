@@ -17,7 +17,7 @@ export const Title = ({ title, changePageTitle, addNode }: TitleProps) => {
     if (!isFocused && headerRef.current) {
       headerRef.current.textContent = title;
     }
-  });
+  }, [title]);
 
   return (
     <div className={styles.container}>

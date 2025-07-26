@@ -31,19 +31,29 @@ export const BasicNode = ({
   const { changeNodeValue, changeNodeType, removeNodeByIndex, addNode } =
     useAppState();
 
+  // useEffect(() => {
+  //   if (isFocused) {
+  //     nodeRef.current?.focus();
+  //   } else {
+  //     nodeRef.current?.blur();
+  //   }
+  // }, [isFocused]);
+
+  // useEffect(() => {
+  //   if (nodeRef.current && !isFocused) {
+  //     nodeRef.current.textContent = node.value;
+  //   }
+  // }, [node]);
   useEffect(() => {
+    if (nodeRef.current && document.activeElement !== nodeRef.current) {
+      nodeRef.current.textContent = node.value;
+    }
     if (isFocused) {
       nodeRef.current?.focus();
     } else {
       nodeRef.current?.blur();
     }
-  }, [isFocused]);
-
-  useEffect(() => {
-    if (nodeRef.current && !isFocused) {
-      nodeRef.current.textContent = node.value;
-    }
-  }, [node]);
+  }, [node, isFocused]);
 
   const parseCommand = (nodeType: NodeType) => {
     if (nodeRef.current) {
@@ -68,9 +78,9 @@ export const BasicNode = ({
       if (target.textContent?.[0] === "/") {
         return;
       }
-      const newIndex = index + 1;
-      addNode({ type: node.type, value: "", id: nanoid() }, newIndex);
-      upadteFocusedIndex(newIndex); // code added
+      // const newIndex = index + 1;
+      addNode({ type: node.type, value: "", id: nanoid() }, index + 1);
+      upadteFocusedIndex(index + 1);
     }
     if (event.key === "Backspace") {
       if (target.textContent?.length === 0) {

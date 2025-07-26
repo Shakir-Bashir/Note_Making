@@ -17,6 +17,8 @@ type SupportedNodeType = {
 const supportedNodeTypes: SupportedNodeType[] = [
   { value: "text", name: "Text" },
   { value: "list", name: "List" },
+  { value: "page", name: "Page" },
+  { value: "image", name: "Image" },
   { value: "heading1", name: "Heading1" },
   { value: "heading2", name: "Heading2" },
   { value: "heading3", name: "Heading3" },
@@ -38,7 +40,7 @@ export const CommandPanel = ({ selectItem, nodeText }: CommandPanelProps) => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [selectItem, selectItem]);
+  }, [selectedItemIndex, selectItem]);
 
   useEffect(() => {
     const normalizedValue = nodeText.toLocaleLowerCase().replace(/\//, "");

@@ -14,7 +14,12 @@ export const Auth = () => {
 
     try {
       setLoading(true);
-      const { error } = await supabase.auth.signInWithOtp({ email });
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: window.location.origin,
+        },
+      });
       if (error) throw error;
       alert("Check your email for login link");
     } catch (error) {
